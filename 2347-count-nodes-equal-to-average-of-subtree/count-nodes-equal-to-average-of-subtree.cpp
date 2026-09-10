@@ -11,40 +11,40 @@
  */
 class Solution {
 public:
-    int fsize(TreeNode* root){
-        if(root == NULL) return 0;
+    // int fsize(TreeNode* root){
+    //     if(root == NULL) return 0;
 
-        int leftcount = fsize(root->left);
-        int rightcount = fsize(root->right);
+    //     int leftcount = fsize(root->left);
+    //     int rightcount = fsize(root->right);
 
-        return leftcount + rightcount + 1;
-    }
+    //     return leftcount + rightcount + 1;
+    // }
 
-    int fsum(TreeNode* root){
+    // int fsum(TreeNode* root){
 
-        if(root == NULL) return 0;
+    //     if(root == NULL) return 0;
 
-        int leftsum = fsum(root->left);
-        int rightsum = fsum(root->right);
+    //     int leftsum = fsum(root->left);
+    //     int rightsum = fsum(root->right);
 
-        return leftsum + rightsum + root->val;
-    }
+    //     return leftsum + rightsum + root->val;
+    // }
 
-    int calculate(TreeNode* root, int count){
+    pair<int,int> calculate(TreeNode* root, int &count){
+        if(root == NULL) return {0,0};
 
-         if(root == NULL) return count;
-        int size = fsize(root);
-        int sum = fsum(root);
+        pair<int,int>  leftpart = calculate(root->left,count);
+        pair<int,int>  rightpart = calculate(root->right,count);
 
-        if((sum / size) == root->val) count++;
+        int sum = leftpart.first + rightpart.first + root->val;
+        int size = leftpart.second + rightpart.second + 1;
 
-        count = calculate(root->left,count);
-        count = calculate(root->right,count);
-        return count;
+        if((sum/size) == root->val) count++;
+        return {sum,size};
     }
     int averageOfSubtree(TreeNode* root) {
-      
-       int ans = calculate(root, 0); 
-       return ans;
+      int count = 0;
+      calculate(root, count); 
+       return count;
     }
 };
