@@ -1,37 +1,45 @@
 class Solution {
 public:
-    int minOperations(vector<int>& nums, int x) {
+    int helper(vector<int>& nums, int target) {
+        int l = 0, r = 0;
         int sum = 0;
-        for (int i : nums) {
-            sum += i;
-        }
-        int target = sum - x;
+        int maxlen = 0;
 
+        while (r < nums.size()) {
+            sum += nums[r];
+
+            while (sum > target) {
+                sum -= nums[l];
+                l++;
+            }
+            if (sum == target) {
+                int len = r - l + 1;
+                maxlen = max(maxlen, len);
+            }
+            r++;
+        }
+        return maxlen;
+    }
+    int minOperations(vector<int>& nums, int x) {
+        // weh have to find ot who stay in the middle so for that total - x will
+        // stay in middle  and have to find out longest subarray with that value
+
+        int total = 0;
+        for (int i : nums)
+            total += i;
+
+        int target = total - x;
         if (target < 0)
             return -1;
 
         if (target == 0)
             return nums.size();
 
-        int lngarr = -1;
+        int maxlen = helper(nums, target);
 
-        int left = 0, curr = 0;
-        for(int right = 0; right < nums.size();right++){
-            curr += nums[right];
-
-            while(curr > target){
-                curr -= nums[left];
-                left++;
-            }
-
-            if(curr == target){
-                lngarr = max(lngarr, right- left+1);
-            }
-        }
-
-        if (lngarr == -1)
+        if (maxlen == 0)
             return -1;
 
-        return nums.size() - lngarr;
+        return nums.size() - maxlen;
     }
 };
