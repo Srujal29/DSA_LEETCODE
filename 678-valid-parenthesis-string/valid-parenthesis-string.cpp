@@ -1,25 +1,26 @@
 class Solution {
-public:
-    bool checkValidString(string s) {
-        int min = 0;
-        int max = 0;
+public: 
+    bool f(int i,int balance , string s, vector<vector<int>> &dp){
+        if(balance  < 0 ) return false;
 
-        for(int i=0;i < s.size();i++){
-            if(s[i] == '('){
-                min++;
-                max++;
-            }else if( s[i] == ')'){
-                min--;
-                max--;
-            }else{
-                min--;
-                max++;
-            }
+        if(i == s.size()){
+            return balance == 0;
+        }
+        if(dp[i][balance] != -1) return dp[i][balance];
 
-            if(min < 0 ) min = 0;
-            if(max < 0 ) return false;
+        if(s[i] == '(') return dp[i][balance] =  f(i+1, balance + 1, s, dp);
+
+        if(s[i] == ')'){
+            
+                return dp[i][balance] = f(i+1, balance - 1,s, dp);
         }
 
-        return min == 0;
+        return dp[i][balance] =  f(i+1, balance + 1, s,dp) || f(i+1, balance - 1, s,dp) || f(i+1,balance, s,dp);
+
+    }
+    bool checkValidString(string s) {
+        vector<vector<int>> dp(s.size() , vector<int> (s.size()+1,-1));
+        return f(0 ,0 , s, dp);
+
     }
 };
